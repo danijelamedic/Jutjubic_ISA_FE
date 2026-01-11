@@ -1,0 +1,13 @@
+<h2>Aktivacija naloga</h2>
+
+<div *ngIf="loading">Aktiviram nalog...</div>
+
+<div *ngIf="!loading && successMessage" style="color: green;">
+    {{ successMessage }}
+</div>
+
+<div *ngIf="!loading && errorMessage" style="color: red;">
+    {{ errorMessage }}
+</div>
+
+<a routerLink="/login">Nazad na login</a>
