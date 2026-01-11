@@ -56,7 +56,7 @@ export class Login {
         }
 
         this.successMessage = 'Uspešna prijava.';
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/home');
       },
       error: (err) => {
         this.isSubmitting = false;

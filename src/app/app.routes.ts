@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { Login } from './features/auth/pages/login/login';
 import { Register } from './features/auth/pages/register/register';
 import { Activate } from './features/auth/pages/activate/activate';
+import { Home } from './features/home/home'
 
 export const routes: Routes = [
   {
@@ -17,7 +18,11 @@ export const routes: Routes = [
     path: 'activate',
     component: Activate
   },
-  
+  {
+    path: 'home',
+    component: Home
+  },
+
   // default route
   {
     path: '',
