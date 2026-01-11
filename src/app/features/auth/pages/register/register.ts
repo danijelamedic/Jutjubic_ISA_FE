@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../core/services/auth.services';
-import { RegistrationRequest } from '../../../../core/models/auth.models';
+import { RegistrationRequest, ResponseMessage } from '../../../../core/models/auth.models';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const pass = group.get('password')?.value;
@@ -68,7 +68,7 @@ export class Register {
     this.isSubmitting = true;
 
     this.authService.register(payload).subscribe({
-      next: (_res) => {
+      next: (res: ResponseMessage) => {
         this.successMessage = 'Registracija uspešna. Proverite email i aktivirajte nalog preko linka.';
         this.isSubmitting = false;
         this.form.reset();

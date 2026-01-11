@@ -1,13 +1,18 @@
-<h2>Aktivacija naloga</h2>
+<div class="auth-card">
+    <h1>Aktivacija naloga</h1>
 
-<div *ngIf="loading">Aktiviram nalog...</div>
+    <div class="loading" *ngIf="status === 'loading'">
+        <div class="spinner"></div>
+        <p>Aktiviram nalog...</p>
+    </div>
 
-<div *ngIf="!loading && successMessage" style="color: green;">
-    {{ successMessage }}
+    <div class="alert success" *ngIf="status === 'success'">
+        {{ successMessage }}
+    </div>
+
+    <div class="alert error" *ngIf="status === 'error'">
+        {{ errorMessage }}
+    </div>
+
+    <a class="btn-secondary" routerLink="/login">Nazad na prijavu</a>
 </div>
-
-<div *ngIf="!loading && errorMessage" style="color: red;">
-    {{ errorMessage }}
-</div>
-
-<a routerLink="/login">Nazad na login</a>

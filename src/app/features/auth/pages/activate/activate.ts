@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.services';
 
 @Component({
   selector: 'app-activate',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './activate.html',
   styleUrl: './activate.scss'
 })
 export class Activate implements OnInit {
-  loading = true;
   successMessage = '';
   errorMessage = '';
+  status: 'loading' | 'success' | 'error' = 'loading';
 
   constructor(
     private route: ActivatedRoute,
@@ -24,18 +24,20 @@ export class Activate implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (!token) {
-      this.loading = false;
+      this.status = 'error';
       this.errorMessage = 'Token nije prosleđen u linku.';
       return;
     }
 
+    this.status = 'loading';
+
     this.authService.activate(token).subscribe({
       next: (res) => {
-        this.loading = false;
+        this.status = 'success';
         this.successMessage = res.message || 'Nalog je uspešno aktiviran.';
       },
       error: (err) => {
-        this.loading = false;
+        this.status = 'error';
         this.errorMessage =
           err?.error?.message || 'Aktivacija nije uspela (neispravan ili istekao token).';
       }
