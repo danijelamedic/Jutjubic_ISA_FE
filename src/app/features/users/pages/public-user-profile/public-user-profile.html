@@ -1,0 +1,43 @@
+<div class="page">
+    <div class="container">
+        <a class="back" routerLink="/">← Nazad na feed</a>
+
+        <div class="profile-card" *ngIf="user">
+            <div class="avatar"></div>
+            <div class="profile-info">
+                <div class="name">{{ user.firstName }} {{ user.lastName }}</div>
+                <div class="username">@{{ user.username }}</div>
+            </div>
+        </div>
+
+        <div *ngIf="loadingUser" class="info">Učitavanje profila...</div>
+        <div *ngIf="error" class="error">{{ error }}</div>
+
+        <h2 class="section-title">Objave</h2>
+
+        <div *ngIf="loadingVideos" class="info">Učitavanje objava...</div>
+
+        <div class="grid" *ngIf="!loadingVideos && !error">
+            <a class="card" *ngFor="let v of videos" [routerLink]="['/videos', v.id]">
+                <div class="thumb"></div>
+                <div class="card-body">
+                    <div class="title">{{ v.title }}</div>
+                    <div class="meta">
+                        <span>{{ v.createdAt }}</span>
+                    </div>
+
+                    <div class="stats">
+                        <span>🔥 {{ v.likeCount }}</span>
+                        <span>💬 {{ v.commentCount }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-outline" (click)="prevPage()" [disabled]="page === 0">Prethodna</button>
+            <span class="pager-text">Strana {{ page + 1 }} / {{ totalPages }}</span>
+            <button class="btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Sledeća</button>
+        </div>
+    </div>
+</div>
