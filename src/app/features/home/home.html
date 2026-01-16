@@ -21,7 +21,9 @@
                         </a>
                     
                         <span class="dot">•</span>
-                        <span>{{ v.createdAt }}</span>
+                        <span>
+                            {{ v.createdAt | date:'dd.MM.yyyy · HH:mm' }}
+                        </span>
                     </div>
 
 
