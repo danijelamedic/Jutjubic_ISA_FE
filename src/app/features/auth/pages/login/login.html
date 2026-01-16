@@ -1,0 +1,38 @@
+<div class="auth-card">
+    <h1>Prijava</h1>
+
+    <div class="alert error" *ngIf="errorMessage">
+        {{ errorMessage }}
+    </div>
+
+    <div class="alert success" *ngIf="successMessage">
+        {{ successMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" placeholder="npr. ana@gmail.com" formControlName="email" />
+            <small class="hint error" *ngIf="f['email'].touched && f['email'].invalid">
+                Unesite ispravan email.
+            </small>
+        </div>
+
+        <div class="field">
+            <label>Lozinka</label>
+            <input type="password" placeholder="Unesite lozinku" formControlName="password" />
+            <small class="hint error" *ngIf="f['password'].touched && f['password'].invalid">
+                Lozinka je obavezna (min 6 karaktera).
+            </small>
+        </div>
+
+        <button class="btn-primary" type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Slanje...' : 'Uloguj se' }}
+        </button>
+
+        <p class="helper">
+            Nemaš nalog?
+            <a routerLink="/register">Registruj se</a>
+        </p>
+    </form>
+</div>

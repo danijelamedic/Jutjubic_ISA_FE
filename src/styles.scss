@@ -1,1 +1,326 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    --red-1: #d72b1f;
+    --red-2: #d92d21;
+    --bg: #f3e5e4;
+    --sand: #ddaca9;
+
+    --text: #1f1f1f;
+    --muted: #5a5a5a;
+
+    --card: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+
+    --radius: 14px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 18px;
+}
+
+/* HEADER */
+.app-header {
+    background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.85));
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    gap: 18px;
+}
+
+.brand-logo {
+    height: 80px;
+    width: auto;
+    display: block;
+}
+
+.nav {
+    display: flex;
+    gap: 10px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: 0.15s ease;
+}
+
+.nav a:hover {
+    border-color: var(--border);
+    background: rgba(221, 172, 169, 0.18);
+}
+
+.nav a.active {
+    background: rgba(215, 43, 31, 0.10);
+    border-color: rgba(215, 43, 31, 0.35);
+    color: var(--red-1);
+}
+
+/* PAGE */
+.app-main {
+    padding: 26px 0 60px;
+}
+
+/* CARD + FORM */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    max-width: 520px;
+}
+
+.page-title {
+    margin: 0 0 14px;
+    font-size: 22px;
+}
+
+.form {
+    display: grid;
+    gap: 12px;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.field input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    outline: none;
+    background: #fff;
+}
+
+.field input:focus {
+    border-color: rgba(215, 43, 31, 0.55);
+    box-shadow: 0 0 0 4px rgba(215, 43, 31, 0.10);
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.btn {
+    border: 0;
+    cursor: pointer;
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: var(--red-1);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--red-2);
+}
+
+.btn-secondary {
+    background: rgba(221, 172, 169, 0.35);
+    color: var(--text);
+}
+
+.helper {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.alert-success {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(46, 160, 67, 0.10);
+    border: 1px solid rgba(46, 160, 67, 0.25);
+}
+
+.alert-error {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(215, 43, 31, 0.08);
+    border: 1px solid rgba(215, 43, 31, 0.25);
+}
+
+/* ---------- Form UI (global) ---------- */
+
+.form-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  padding: 28px;
+}
+
+.card-title {
+  margin: 0 0 18px 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #1f1f1f;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 700;
+  color: #3b3b3b;
+  font-size: 14px;
+}
+
+.input {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #e4d2d0;
+  padding: 0 12px;
+  font-size: 15px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(215, 43, 31, 0.12);
+}
+
+.input.invalid {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 4px rgba(217, 45, 33, 0.10);
+}
+
+.hint {
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+.error-text {
+  font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  color: white;
+  background: var(--primary);
+  transition: transform 0.05s ease, opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.95;
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alert {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: 1px solid var(--accent);
+  background: #fff7f6;
+  color: #2a2a2a;
+}
+
+.alert.success {
+  background: #f3fff5;
+  border-color: #b8e3c1;
+}
+
+.alert.error {
+  background: #fff3f2;
+  border-color: #f0b7b3;
+}
+
+.nav-btn {
+  appearance: none;
+  background: transparent;
+  text-decoration: none;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: 0.15s ease;
+  cursor: pointer;
+  font: inherit;
+}
+
+.nav-btn:hover {
+  border-color: var(--border);
+  background: rgba(221, 172, 169, 0.18);
+}

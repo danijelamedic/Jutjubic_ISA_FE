@@ -1,0 +1,41 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { SpringPage, PublicVideoDTO, PublicCommentDTO, PublicUserDTO } from '../models/public.models';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PublicService {
+    private readonly baseUrl = '/api/public';
+
+    constructor(private http: HttpClient) {}
+
+    getVideos(page = 0, size = 10) {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<SpringPage<PublicVideoDTO>>(`${this.baseUrl}/videos`, { params });
+  }
+
+  getVideoComments(videoId: number) {
+    return this.http.get<PublicCommentDTO[]>(
+      `${this.baseUrl}/videos/${videoId}/comments`
+    );
+  }
+
+  getPublicUser(username: string) {
+    return this.http.get<PublicUserDTO>(`${this.baseUrl}/users/${username}`);
+  }
+
+  getUserVideos(username: string, page = 0, size = 6) {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<SpringPage<PublicVideoDTO>>(
+      `${this.baseUrl}/users/${username}/videos`,
+      { params }
+    );
+  }
+
+
+}
+
+

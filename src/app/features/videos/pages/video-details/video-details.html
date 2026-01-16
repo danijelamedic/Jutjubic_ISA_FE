@@ -1,0 +1,51 @@
+<div class="page">
+    <div class="container">
+        <a class="back" routerLink="/">← Nazad na feed</a>
+
+        <div class="video-box">
+            <div class="thumb"></div>
+
+            <div class="video-actions">
+                <button class="btn-outline" (click)="onLikeClick()">👍 Like</button>
+                <button class="btn" (click)="onCommentClick()">💬 Komentariši</button>
+            </div>
+
+            <div class="notice" *ngIf="showAuthNotice">
+                <div class="notice-card">
+                    <div class="notice-title">Potrebna prijava</div>
+                    <div class="notice-text">
+                        Morate da se prijavite da biste izvršili ovu akciju.
+                    </div>
+
+                    <div class="notice-actions">
+                        <a class="btn" routerLink="/login" (click)="closeNotice()">Prijavi se</a>
+                        <button class="btn-outline" (click)="closeNotice()">Zatvori</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Komentari</h2>
+
+        <div class="info" *ngIf="!loading && !error && comments.length === 0">
+            <p class="no-comments">
+                Nema komentara za ovaj video.
+            </p>
+        </div>
+
+        <div *ngIf="loading" class="info">Učitavanje...</div>
+        <div *ngIf="error" class="error">{{ error }}</div>
+
+        <div class="comments" *ngIf="!loading && !error">
+            <div class="comment" *ngFor="let c of comments">
+                <div class="comment-head">
+                    <a class="author" [routerLink]="['/users', c.authorUsername]">{{ c.authorUsername }}</a>
+                    <span class="dot">•</span>
+                    <span class="date">{{ c.createdAt }}</span>
+                </div>
+                <div class="comment-text">{{ c.text }}</div>
+            </div>
+
+        </div>
+    </div>
+</div>

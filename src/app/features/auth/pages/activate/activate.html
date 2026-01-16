@@ -1,0 +1,18 @@
+<div class="auth-card">
+    <h1>Aktivacija naloga</h1>
+
+    <div class="loading" *ngIf="status === 'loading'">
+        <div class="spinner"></div>
+        <p>Aktiviram nalog...</p>
+    </div>
+
+    <div class="alert success" *ngIf="status === 'success'">
+        {{ successMessage }}
+    </div>
+
+    <div class="alert error" *ngIf="status === 'error'">
+        {{ errorMessage }}
+    </div>
+
+    <a class="btn-secondary" routerLink="/login">Nazad na prijavu</a>
+</div>
