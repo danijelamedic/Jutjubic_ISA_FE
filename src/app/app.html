@@ -1,9 +1,17 @@
 <header class="app-header">
   <div class="container header-inner">
     <img class="brand-logo" src="images/jutjubic.png" alt="Jutjubić" />
+
     <nav class="nav">
+      <a routerLink="/home" routerLinkActive="active">Home</a>
+
+      @if (!authState.isAuthenticated()) {
       <a routerLink="/login" routerLinkActive="active">Login</a>
       <a routerLink="/register" routerLinkActive="active">Registracija</a>
+      } @else {
+      <!-- koristimo <button> ali ga stilizujemo da izgleda kao link -->
+      <button type="button" class="nav-btn" (click)="logout()">Logout</button>
+      }
     </nav>
   </div>
 </header>

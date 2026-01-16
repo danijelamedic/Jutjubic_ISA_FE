@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.services';
+import { AuthStateService } from '../../../../core/auth/auth-state.service'; 
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
@@ -21,7 +24,9 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private authState: AuthStateService, 
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,14 +54,19 @@ export class Login {
       next: (res) => {
         this.isSubmitting = false;
 
-        const token = res.token || res.accessToken || res.jwt;
+        const token = (res as any).token || (res as any).accessToken || (res as any).jwt;
         if (!token) {
           this.errorMessage = 'Login uspeo, ali token nije vraćen sa servera.';
           return;
         }
 
+        this.authState.setToken(token); 
+
         this.successMessage = 'Uspešna prijava.';
-        this.router.navigateByUrl('/home');
+
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+        this.router.navigateByUrl(returnUrl);
+
       },
       error: (err) => {
         this.isSubmitting = false;

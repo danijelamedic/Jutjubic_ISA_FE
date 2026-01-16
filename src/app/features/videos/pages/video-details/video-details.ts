@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { PublicService } from '../../../../core/services/public.service';
 import { PublicCommentDTO } from '../../../../core/models/public.models';
+import { AuthStateService } from '../../../../core/auth/auth-state.service';
 
 @Component({
   selector: 'app-video-details',
@@ -29,7 +30,9 @@ export class VideoDetails implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private publicService: PublicService
+    private router: Router,
+    private publicService: PublicService,
+    public authState: AuthStateService
   ) {}
 
   ngOnInit(): void {
@@ -44,22 +47,21 @@ export class VideoDetails implements OnInit {
     this.loadComments();
   }
 
- loadComments(): void {
-  this.loading = true;
-  this.error = null;
+  loadComments(): void {
+    this.loading = true;
+    this.error = null;
 
-  this.publicService.getVideoComments(this.videoId).subscribe({
-    next: (res) => {
-      this.comments = res;
-      this.loading = false;
-    },
-    error: () => {
-      this.error = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
-      this.loading = false;
-    }
-  });
-}
-
+    this.publicService.getVideoComments(this.videoId).subscribe({
+      next: (res) => {
+        this.comments = res;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
+        this.loading = false;
+      }
+    });
+  }
 
   prevPage(): void {
     if (this.page > 0) this.loadComments();
@@ -69,13 +71,28 @@ export class VideoDetails implements OnInit {
     if (this.page + 1 < this.totalPages) this.loadComments();
   }
 
-  // neautentifikovani ne smeju like/comment
+  // neautentifikovani: obavesti + redirect na login sa returnUrl
   onLikeClick(): void {
+    if (this.authState.isAuthenticated()) {
+      // TODO: kasnije pravi like
+      return;
+    }
     this.showAuthNotice = true;
   }
 
   onCommentClick(): void {
+    if (this.authState.isAuthenticated()) {
+      // TODO: kasnije pravi comment
+      return;
+    }
     this.showAuthNotice = true;
+  }
+
+  goToLogin(): void {
+    this.showAuthNotice = false;
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: this.router.url }
+    });
   }
 
   closeNotice(): void {
