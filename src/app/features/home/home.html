@@ -7,7 +7,10 @@
 
         <div class="grid" *ngIf="!loading && !error">
             <a class="card" *ngFor="let v of videos" [routerLink]="['/videos', v.id]">
-                <div class="thumb"></div>
+                <div class="thumb">
+                    <img class="thumb-img" [src]="'/api/public/videos/' + v.id + '/thumbnail'" alt="thumbnail" />
+                </div>
+
 
                 <div class="card-body">
                     <div class="card-title">{{ v.title }}</div>

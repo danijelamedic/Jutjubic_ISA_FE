@@ -10,8 +10,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // opcionalno: zapamti gde je user hteo da ode
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
+  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  return false;
 };

@@ -25,8 +25,15 @@ export class Home implements OnInit {
   constructor(private publicService: PublicService) {}
 
   ngOnInit(): void {
-    this.loadVideos(0);
+    const needsRefresh = sessionStorage.getItem('home_refresh') === '1';
+    if (needsRefresh) {
+      sessionStorage.removeItem('home_refresh');
+      this.loadVideos(0); 
+    } else {
+      this.loadVideos(0);
+    }
   }
+
 
   loadVideos(page: number): void {
     this.loading = true;

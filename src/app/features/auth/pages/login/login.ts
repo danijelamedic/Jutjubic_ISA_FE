@@ -64,7 +64,7 @@ export class Login {
 
         this.successMessage = 'Uspešna prijava.';
 
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
         this.router.navigateByUrl(returnUrl);
 
       },

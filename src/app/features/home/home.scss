@@ -52,8 +52,16 @@
 }
 
 .thumb {
-    height: 140px;
+    border-radius: 12px;
+    overflow: hidden;
     background: linear-gradient(135deg, #ddaca9, #f3e5e4);
+}
+
+.thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .card-body {

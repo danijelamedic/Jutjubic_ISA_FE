@@ -6,6 +6,8 @@ import { Activate } from './features/auth/pages/activate/activate';
 import { Home } from './features/home/home';
 import { VideoDetails } from './features/videos/pages/video-details/video-details';
 import { PublicUserProfile } from './features/users/pages/public-user-profile/public-user-profile';
+import { UploadVideo } from './features/videos/pages/upload-video/upload-video';
+import { authGuard } from './core/guards/auth.guard';
 
 
 
@@ -35,6 +37,11 @@ export const routes: Routes = [
   {
     path: 'users/:username',
     component: PublicUserProfile
+  },
+  {
+    path: 'upload',
+    component: UploadVideo,
+    canActivate: [authGuard]
   },
 
   // default

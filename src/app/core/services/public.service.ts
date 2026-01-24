@@ -35,7 +35,10 @@ export class PublicService {
     );
   }
 
-
+  getVideoDetails(videoId: number): Observable<PublicVideoDTO> {
+    return this.http.get<PublicVideoDTO>(`/api/public/videos/${videoId}`);
+  }
+  
 }
 
 
