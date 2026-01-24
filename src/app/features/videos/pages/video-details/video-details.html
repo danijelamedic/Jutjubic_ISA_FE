@@ -4,9 +4,13 @@
 
         <div class="video-box">
 
-            <div class="thumb">
-                <img class="thumb-img" [src]="'/api/public/videos/' + videoId + '/thumbnail'" alt="thumbnail" />
+            <div class="video-player">
+                <video class="video" controls preload="metadata" [poster]="'/api/public/videos/' + videoId + '/thumbnail'">
+                    <source [src]="'/api/public/videos/' + videoId + '/stream'" type="video/mp4" />
+                    Vaš pregledač ne podržava video tag.
+                </video>
             </div>
+
 
 
             <!-- VIDEO META -->
