@@ -1,0 +1,95 @@
+<div class="page">
+    <div class="card">
+        <h1>Postavi video</h1>
+        <p class="subtitle">
+            Dodaj naslov, opis, tagove, thumbnail i MP4 video (max 200MB).
+        </p>
+
+        <!-- Globalne poruke -->
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <div class="alert success" *ngIf="success">{{ success }}</div>
+
+        <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+            <!-- Naslov -->
+            <label class="field">
+                <span>Naslov</span>
+                <input type="text" formControlName="title" placeholder="npr. Moj prvi video" />
+                <small *ngIf="
+            form.get('title')?.touched &&
+            form.get('title')?.invalid
+          ">
+                    Naslov je obavezan (3–80 karaktera).
+                </small>
+            </label>
+
+            <!-- Opis -->
+            <label class="field">
+                <span>Opis</span>
+                <textarea rows="5" formControlName="description" placeholder="Dodaj opis videa ..."></textarea>
+                <small *ngIf="
+            form.get('description')?.touched &&
+            form.get('description')?.invalid
+          ">
+                    Opis je obavezan (minimum 5 karaktera).
+                </small>
+            </label>
+
+            <!-- Tagovi -->
+            <label class="field">
+                <span>Tagovi (odvojeni zarezom)</span>
+                <input type="text" formControlName="tagsCsv" placeholder="npr. muzika, putovanje, vlog" />
+                <small *ngIf="
+            form.get('tagsCsv')?.touched &&
+            form.get('tagsCsv')?.invalid
+          ">
+                    Tagovi su obavezni.
+                </small>
+            </label>
+
+            <!-- Lokacija -->
+            <label class="field">
+                <span>Lokacija (opciono)</span>
+                <input type="text" formControlName="location" placeholder="npr. Novi Sad" />
+            </label>
+
+            <!-- Upload sekcija -->
+            <div class="grid">
+                <!-- Thumbnail -->
+                <div class="upload-box">
+                    <div class="upload-title">Thumbnail</div>
+                    <input #thumbInput type="file" accept="image/*" (change)="onThumbSelected($event)" />
+                    <div class="hint">
+                        Izaberi sliku koja predstavlja video.
+                    </div>
+
+                    <div class="thumb-preview" *ngIf="thumbPreviewUrl">
+                        <img [src]="thumbPreviewUrl" alt="Thumbnail preview" />
+                    </div>
+                </div>
+
+                <!-- Video -->
+                <div class="upload-box">
+                    <div class="upload-title">Video (MP4)</div>
+                    <input #videoInput type="file" accept="video/mp4" (change)="onVideoSelected($event)" />
+                    <div class="hint" *ngIf="selectedVideo">
+                        Izabrano: <b>{{ selectedVideo.name }}</b>
+                    </div>
+                    <div class="hint" *ngIf="!selectedVideo">
+                        Max 200MB, format mp4.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="progress" *ngIf="submitting">
+                <div class="bar" [style.width.%]="progress"></div>
+                <div class="text">{{ progress }}%</div>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn" type="submit" [disabled]="!canSubmit()">
+                {{ submitting ? 'Upload u toku...' : 'Postavi video' }}
+            </button>
+        </form>
+    </div>
+</div>

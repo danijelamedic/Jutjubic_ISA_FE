@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { PublicService } from '../../../../core/services/public.service';
-import { PublicCommentDTO } from '../../../../core/models/public.models';
+import { PublicCommentDTO, PublicVideoDTO } from '../../../../core/models/public.models';
 import { AuthStateService } from '../../../../core/auth/auth-state.service';
 
 @Component({
@@ -16,12 +16,17 @@ import { AuthStateService } from '../../../../core/auth/auth-state.service';
 export class VideoDetails implements OnInit {
   videoId!: number;
 
-  loading = false;
-  error: string | null = null;
+  // video details state
+  videoLoading = false;
+  errorVideo: string | null = null;
+  video: PublicVideoDTO | null = null;
 
+  // comments state
+  loading = false;
+  errorComments: string | null = null;
   comments: PublicCommentDTO[] = [];
 
-  // pagination comments
+  // pagination comments 
   page = 0;
   size = 10;
   totalPages = 0;
@@ -40,16 +45,33 @@ export class VideoDetails implements OnInit {
     this.videoId = Number(idParam);
 
     if (!this.videoId || Number.isNaN(this.videoId)) {
-      this.error = 'Neispravan video ID.';
+      this.errorVideo = 'Neispravan video ID.';
       return;
     }
 
+    this.loadVideoDetails();
     this.loadComments();
+  }
+
+  private loadVideoDetails(): void {
+    this.videoLoading = true;
+    this.errorVideo = null;
+
+    this.publicService.getVideoDetails(this.videoId).subscribe({
+      next: (res) => {
+        this.video = res;
+        this.videoLoading = false;
+      },
+      error: () => {
+        this.errorVideo = 'Ne mogu da učitam video detalje. Pokušaj ponovo.';
+        this.videoLoading = false;
+      }
+    });
   }
 
   loadComments(): void {
     this.loading = true;
-    this.error = null;
+    this.errorComments = null;
 
     this.publicService.getVideoComments(this.videoId).subscribe({
       next: (res) => {
@@ -57,21 +79,26 @@ export class VideoDetails implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
+        this.errorComments = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
         this.loading = false;
       }
     });
   }
 
   prevPage(): void {
-    if (this.page > 0) this.loadComments();
+    if (this.page > 0) {
+      this.page--;
+      this.loadComments();
+    }
   }
 
   nextPage(): void {
-    if (this.page + 1 < this.totalPages) this.loadComments();
+    if (this.page + 1 < this.totalPages) {
+      this.page++;
+      this.loadComments();
+    }
   }
 
-  // neautentifikovani: obavesti + redirect na login sa returnUrl
   onLikeClick(): void {
     if (this.authState.isAuthenticated()) {
       // TODO: kasnije pravi like

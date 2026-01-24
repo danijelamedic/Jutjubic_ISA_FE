@@ -85,4 +85,5 @@ export class PublicUserProfile implements OnInit {
   nextPage(): void {
     if (this.page + 1 < this.totalPages) this.loadVideos(this.page + 1);
   }
+  
 }

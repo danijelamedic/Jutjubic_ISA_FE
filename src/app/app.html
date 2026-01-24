@@ -4,15 +4,17 @@
 
     <nav class="nav">
       <a routerLink="/home" routerLinkActive="active">Home</a>
+    
+      <a class="nav-link" routerLink="/upload" *ngIf="isLoggedIn()">Postavi video</a>
 
-      @if (!authState.isAuthenticated()) {
-      <a routerLink="/login" routerLinkActive="active">Login</a>
+      @if (!isLoggedIn()) {
+      <a routerLink="/login" routerLinkActive="active">LogIn</a>
       <a routerLink="/register" routerLinkActive="active">Registracija</a>
       } @else {
-      <!-- koristimo <button> ali ga stilizujemo da izgleda kao link -->
-      <button type="button" class="nav-btn" (click)="logout()">Logout</button>
+      <button type="button" class="nav-btn" (click)="logout()">LogOut</button>
       }
     </nav>
+
   </div>
 </header>
 

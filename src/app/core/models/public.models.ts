@@ -5,6 +5,8 @@ export interface PublicVideoDTO {
   createdAt: string; // ISO string
   likeCount: number;
   commentCount: number;
+  location: string | null;
+  description: string;
 }
 
 export interface SpringPage<T> {

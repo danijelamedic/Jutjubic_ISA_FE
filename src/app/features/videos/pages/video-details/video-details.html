@@ -3,7 +3,46 @@
         <a class="back" routerLink="/">← Nazad na feed</a>
 
         <div class="video-box">
-            <div class="thumb"></div>
+
+            <div class="video-player">
+                <video class="video" controls preload="metadata" [poster]="'/api/public/videos/' + videoId + '/thumbnail'">
+                    <source [src]="'/api/public/videos/' + videoId + '/stream'" type="video/mp4" />
+                    Vaš pregledač ne podržava video tag.
+                </video>
+            </div>
+
+
+
+            <!-- VIDEO META -->
+            <div class="video-meta" *ngIf="!videoLoading && !errorVideo && video as v">
+                <h1 class="video-title">{{ v.title }}</h1>
+
+                <div class="video-sub">
+                    <a class="author-link" [routerLink]="['/users', v.authorUsername]">@{{ v.authorUsername }}</a>
+                    <span class="dot">•</span>
+                    <span class="date">{{ v.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+                    <span class="dot">•</span>
+                    <span>{{ v.likeCount }} 👍</span>
+                    <span class="dot">•</span>
+                    <span>{{ v.commentCount }} 💬</span>
+                </div>
+
+                <div class="video-extra">
+                    <div class="row" *ngIf="v.location">
+                        <span class="label">Lokacija:</span>
+                        <span class="value">{{ v.location }}</span>
+                    </div>
+
+                    <div class="row" *ngIf="v.description">
+                        <span class="label">Opis:</span>
+                        <span class="value">{{ v.description }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIDEO LOADING / ERROR -->
+            <div *ngIf="videoLoading" class="info">Učitavanje videa...</div>
+            <div *ngIf="errorVideo" class="error">{{ errorVideo }}</div>
 
             <div class="video-actions">
                 <button class="btn-outline" (click)="onLikeClick()">👍 Like</button>
@@ -23,20 +62,19 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <h2 class="section-title">Komentari</h2>
 
-        <div class="info" *ngIf="!loading && !error && comments.length === 0">
-            <p class="no-comments">
-                Nema komentara za ovaj video.
-            </p>
+        <div class="info" *ngIf="!loading && !errorComments && comments.length === 0">
+            <p class="no-comments">Nema komentara za ovaj video.</p>
         </div>
 
         <div *ngIf="loading" class="info">Učitavanje...</div>
-        <div *ngIf="error" class="error">{{ error }}</div>
+        <div *ngIf="errorComments" class="error">{{ errorComments }}</div>
 
-        <div class="comments" *ngIf="!loading && !error">
+        <div class="comments" *ngIf="!loading && !errorComments">
             <div class="comment" *ngFor="let c of comments">
                 <div class="comment-head">
                     <a class="author" [routerLink]="['/users', c.authorUsername]">{{ c.authorUsername }}</a>
@@ -45,7 +83,7 @@
                 </div>
                 <div class="comment-text">{{ c.text }}</div>
             </div>
-
         </div>
+
     </div>
 </div>

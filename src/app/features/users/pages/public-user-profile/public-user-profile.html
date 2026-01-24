@@ -19,15 +19,18 @@
 
         <div class="grid" *ngIf="!loadingVideos && !error">
             <a class="card" *ngFor="let v of videos" [routerLink]="['/videos', v.id]">
-                <div class="thumb"></div>
+                <div class="thumb">
+                    <img class="thumb-img" [src]="'/api/public/videos/' + v.id + '/thumbnail'" alt="thumbnail" />
+                </div>
+
                 <div class="card-body">
                     <div class="title">{{ v.title }}</div>
                     <div class="meta">
-                        <span>{{ v.createdAt }}</span>
+                        <span>{{ v.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
                     </div>
 
                     <div class="stats">
-                        <span>🔥 {{ v.likeCount }}</span>
+                        <span>👍 {{ v.likeCount }}</span>
                         <span>💬 {{ v.commentCount }}</span>
                     </div>
                 </div>
