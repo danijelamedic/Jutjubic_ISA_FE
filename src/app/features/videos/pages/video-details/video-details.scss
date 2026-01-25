@@ -263,3 +263,52 @@
     display: block;
     background: #000;
 }
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; 
+}
+
+.comment-card {
+    background: #fff;
+    border-left: 4px solid #d72b1f;
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.comment-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 6px;
+
+    strong {
+        color: #d72b1f;
+    }
+
+    .date {
+        color: #777;
+        font-size: 12px;
+    }
+}
+
+.comment-text {
+    font-size: 14px;
+    color: #222;
+    line-height: 1.35;
+}
+
+.comment-user {
+    color: #d72b1f;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.comment-user:hover {
+    text-decoration: underline;
+}
+

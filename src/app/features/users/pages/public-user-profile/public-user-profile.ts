@@ -65,18 +65,19 @@ export class PublicUserProfile implements OnInit {
     this.error = null;
 
     this.publicService.getUserVideos(this.username, page, this.size).subscribe({
-      next: (res: SpringPage<PublicVideoDTO>) => {
+      next: (res) => {
         this.videos = res.content;
-        this.page = res.number ?? 0;
-        this.totalPages = res.totalPages ?? 0;
+        this.page = res.page.number;
+        this.totalPages = res.page.totalPages;
         this.loadingVideos = false;
       },
       error: () => {
-        this.error = 'Ne mogu da učitam objave korisnika.';
+        this.error = 'Ne mogu da učitam video objave.';
         this.loadingVideos = false;
       }
     });
   }
+
 
   prevPage(): void {
     if (this.page > 0) this.loadVideos(this.page - 1);

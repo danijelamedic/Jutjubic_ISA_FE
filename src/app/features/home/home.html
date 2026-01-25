@@ -38,10 +38,15 @@
             </a>
         </div>
 
-        <div class="pager" *ngIf="totalPages > 1">
-            <button class="btn" (click)="prevPage()" [disabled]="page === 0">Prethodna</button>
-            <span class="pager-text">Strana {{ page + 1 }} / {{ totalPages }}</span>
-            <button class="btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Sledeća</button>
+        <div class="pagination" *ngIf="totalPages > 1">
+            <button class="page-btn" (click)="prevPage()" [disabled]="page === 0 || loading">
+                ‹ Prethodna
+            </button>
+            <span class="page-info">Strana {{ page + 1 }} / {{ totalPages }}</span>
+            <button class="page-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages || loading">
+                Sledeća ›
+            </button>
         </div>
+
     </div>
 </div>

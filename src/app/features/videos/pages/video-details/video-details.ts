@@ -50,7 +50,7 @@ export class VideoDetails implements OnInit {
     }
 
     this.loadVideoDetails();
-    this.loadComments();
+    this.loadComments(0);
   }
 
   private loadVideoDetails(): void {
@@ -69,34 +69,41 @@ export class VideoDetails implements OnInit {
     });
   }
 
-  loadComments(): void {
+  loadComments(page: number) {
     this.loading = true;
     this.errorComments = null;
 
-    this.publicService.getVideoComments(this.videoId).subscribe({
-      next: (res) => {
-        this.comments = res;
-        this.loading = false;
-      },
-      error: () => {
-        this.errorComments = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
-        this.loading = false;
-      }
-    });
+    this.publicService.getVideoComments(this.videoId, page, this.size)
+      .subscribe({
+        next: (res) => {
+          this.comments = res.content;                 
+          this.page = res.page.number;
+          this.totalPages = res.page.totalPages;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.errorComments = 'Ne mogu da učitam komentare.';
+          this.loading = false;
+        }
+      });
   }
 
+
   prevPage(): void {
-    if (this.page > 0) {
-      this.page--;
-      this.loadComments();
-    }
+    if (this.page <= 0 || this.loading) return;
+    this.loadComments(this.page - 1);
   }
 
   nextPage(): void {
-    if (this.page + 1 < this.totalPages) {
-      this.page++;
-      this.loadComments();
-    }
+    if (this.loading) return;
+    if (this.page + 1 >= this.totalPages) return;
+    this.loadComments(this.page + 1);
+  }
+
+  goToPage(p: number): void {
+    if (this.loading) return;
+    if (p < 0 || p >= this.totalPages) return;
+    this.loadComments(p);
   }
 
   onLikeClick(): void {
