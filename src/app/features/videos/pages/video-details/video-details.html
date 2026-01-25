@@ -67,11 +67,24 @@
 
         <h2 class="section-title">Komentari</h2>
 
+        <div class="add-comment" *ngIf="showAddComment" id="add-comment">
+            <textarea class="comment-input" [(ngModel)]="commentText" [disabled]="submittingComment" (keydown)="onCommentKeydown($event)"
+                placeholder="Napiši komentar..."></textarea>
+
+            <div class="comment-actions">
+                <button class="btn" (click)="submitComment()" [disabled]="submittingComment">
+                    {{ submittingComment ? 'Slanje...' : 'Pošalji' }}
+                </button>
+
+                <div class="msg error" *ngIf="commentError">{{ commentError }}</div>
+                <div class="msg success" *ngIf="commentSuccess">{{ commentSuccess }}</div>
+            </div>
+        </div>
+
         <div class="info" *ngIf="!loading && !errorComments && comments.length === 0">
             <p class="no-comments">Nema komentara za ovaj video.</p>
         </div>
 
-        
         <div class="comments-list">
             <div class="comment-card" *ngFor="let c of comments">
                 <div class="comment-head">
@@ -99,8 +112,6 @@
             </div>
 
         </div>
-
-
 
     </div>
 </div>
