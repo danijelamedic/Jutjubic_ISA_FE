@@ -5,39 +5,47 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PublicService } from '../../../../core/services/public.service';
 import { PublicCommentDTO, PublicVideoDTO } from '../../../../core/models/public.models';
 import { AuthStateService } from '../../../../core/auth/auth-state.service';
+import { FormsModule } from '@angular/forms';
+import { CommentService } from '../../../../core/services/comment.service';
+
 
 @Component({
   selector: 'app-video-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './video-details.html',
   styleUrl: './video-details.scss'
 })
 export class VideoDetails implements OnInit {
   videoId!: number;
 
-  // video details state
   videoLoading = false;
   errorVideo: string | null = null;
   video: PublicVideoDTO | null = null;
 
-  // comments state
   loading = false;
   errorComments: string | null = null;
   comments: PublicCommentDTO[] = [];
 
-  // pagination comments 
   page = 0;
   size = 10;
   totalPages = 0;
 
+  commentText = '';
+  submittingComment = false;
+  commentError: string | null = null;
+  commentSuccess: string | null = null;
+
+
   showAuthNotice = false;
+  showAddComment = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private publicService: PublicService,
-    public authState: AuthStateService
+    public authState: AuthStateService,
+    public commentService: CommentService
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +58,7 @@ export class VideoDetails implements OnInit {
     }
 
     this.loadVideoDetails();
-    this.loadComments();
+    this.loadComments(0);
   }
 
   private loadVideoDetails(): void {
@@ -69,34 +77,41 @@ export class VideoDetails implements OnInit {
     });
   }
 
-  loadComments(): void {
+  loadComments(page: number) {
     this.loading = true;
     this.errorComments = null;
 
-    this.publicService.getVideoComments(this.videoId).subscribe({
-      next: (res) => {
-        this.comments = res;
-        this.loading = false;
-      },
-      error: () => {
-        this.errorComments = 'Ne mogu da učitam komentare. Pokušaj ponovo.';
-        this.loading = false;
-      }
-    });
+    this.publicService.getVideoComments(this.videoId, page, this.size)
+      .subscribe({
+        next: (res) => {
+          this.comments = res.content;                 
+          this.page = res.page.number;
+          this.totalPages = res.page.totalPages;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.errorComments = 'Ne mogu da učitam komentare.';
+          this.loading = false;
+        }
+      });
   }
 
+
   prevPage(): void {
-    if (this.page > 0) {
-      this.page--;
-      this.loadComments();
-    }
+    if (this.page <= 0 || this.loading) return;
+    this.loadComments(this.page - 1);
   }
 
   nextPage(): void {
-    if (this.page + 1 < this.totalPages) {
-      this.page++;
-      this.loadComments();
-    }
+    if (this.loading) return;
+    if (this.page + 1 >= this.totalPages) return;
+    this.loadComments(this.page + 1);
+  }
+
+  goToPage(p: number): void {
+    if (this.loading) return;
+    if (p < 0 || p >= this.totalPages) return;
+    this.loadComments(p);
   }
 
   onLikeClick(): void {
@@ -108,12 +123,28 @@ export class VideoDetails implements OnInit {
   }
 
   onCommentClick(): void {
+    this.commentError = null;
+    this.commentSuccess = null;
+    
     if (this.authState.isAuthenticated()) {
-      // TODO: kasnije pravi comment
+      this.showAuthNotice = false;
+      this.showAddComment = !this.showAddComment; // otvori/zatvori formu
+
+      // setTimeout(() => {
+      //   document.getElementById('add-comment')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // }, 0);
+
+       if (!this.showAddComment) {
+        this.commentError = null;
+        this.commentSuccess = null;
+      }
+
       return;
     }
+    this.showAddComment = false;
     this.showAuthNotice = true;
   }
+
 
   goToLogin(): void {
     this.showAuthNotice = false;
@@ -125,4 +156,59 @@ export class VideoDetails implements OnInit {
   closeNotice(): void {
     this.showAuthNotice = false;
   }
+
+  submitComment(): void {
+  this.commentError = null;
+  this.commentSuccess = null;
+
+  if (!this.authState.isAuthenticated()) {
+    this.showAuthNotice = true;
+    return;
+  }
+
+  const text = this.commentText.trim();
+  if (!text) {
+    this.commentError = 'Komentar ne sme biti prazan.';
+    return;
+  }
+
+  if (text.length > 1500) {
+    this.commentError = 'Komentar je predugačak (max 1500 karaktera).';
+    return;
+  }
+
+  this.submittingComment = true;
+
+  this.commentService.create(this.videoId, text).subscribe({
+    next: () => {
+      this.submittingComment = false;
+      this.commentText = '';
+      this.showAddComment = false;
+      this.commentSuccess = 'Komentar je dodat.';
+
+      this.loadComments(0);
+      this.loadVideoDetails();
+    },
+    error: (err) => {
+      this.submittingComment = false;
+
+      // rate limit 60 komentara po satu - daje status code 429
+      if (err?.status === 429) {
+        this.commentError =
+          'Previše komentara. Dozvoljeno je 60 komentara po satu. Pokušaj kasnije.';
+        return;
+      }
+
+      this.commentError = err?.error?.message || 'Neuspešno dodavanje komentara.';
+    }
+  });
+  }
+  
+  onCommentKeydown(e: KeyboardEvent): void {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      this.submitComment();
+    }
+  }
+
 }

@@ -42,23 +42,34 @@ export class Home implements OnInit {
     this.publicService.getVideos(page, this.size).subscribe({
       next: (res) => {
         this.videos = res.content;
-        this.page = res.number ?? res.pageable?.pageNumber ?? 0;
-        this.totalPages = res.totalPages ?? 0;
-        this.totalPages = res.totalPages;
+        this.page = res.page.number;
+        this.totalPages = res.page.totalPages;
         this.loading = false;
       },
       error: () => {
-        this.error = 'Ne mogu da učitam objave. Pokušaj ponovo.';
+        this.error = 'Ne mogu da učitam objave.';
         this.loading = false;
       }
     });
   }
 
+
   prevPage(): void {
-    if (this.page > 0) this.loadVideos(this.page - 1);
+    if (this.page <= 0 || this.loading) return;
+    this.loadVideos(this.page - 1);
   }
 
   nextPage(): void {
-    if (this.page + 1 < this.totalPages) this.loadVideos(this.page + 1);
+    if (this.loading) return;
+    if (this.page + 1 >= this.totalPages) return;
+    this.loadVideos(this.page + 1);
   }
+
+
+  goToPage(p: number): void {
+    if (this.loading) return;
+    if (p < 0 || p >= this.totalPages) return;
+    this.loadVideos(p);
+  }
+
 }

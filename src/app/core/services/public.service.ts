@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SpringPage, PublicVideoDTO, PublicCommentDTO, PublicUserDTO } from '../models/public.models';
+import { SpringPage, PublicVideoDTO, PublicCommentDTO, PublicUserDTO, PagedResponse } from '../models/public.models';
 
 
 @Injectable({
@@ -12,14 +12,14 @@ export class PublicService {
 
     constructor(private http: HttpClient) {}
 
-    getVideos(page = 0, size = 10) {
+      getVideos(page = 0, size = 10) {
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<SpringPage<PublicVideoDTO>>(`${this.baseUrl}/videos`, { params });
+    return this.http.get<PagedResponse<PublicVideoDTO>>(`${this.baseUrl}/videos`, { params });
   }
 
-  getVideoComments(videoId: number) {
-    return this.http.get<PublicCommentDTO[]>(
-      `${this.baseUrl}/videos/${videoId}/comments`
+  getVideoComments(videoId: number, page: number, size: number) {
+    return this.http.get<PagedResponse<PublicCommentDTO>>(
+      `/api/public/videos/${videoId}/comments?page=${page}&size=${size}`
     );
   }
 
@@ -29,11 +29,12 @@ export class PublicService {
 
   getUserVideos(username: string, page = 0, size = 6) {
     const params = new HttpParams().set('page', page).set('size', size);
-    return this.http.get<SpringPage<PublicVideoDTO>>(
+    return this.http.get<PagedResponse<PublicVideoDTO>>(
       `${this.baseUrl}/users/${username}/videos`,
       { params }
     );
   }
+
 
   getVideoDetails(videoId: number): Observable<PublicVideoDTO> {
     return this.http.get<PublicVideoDTO>(`/api/public/videos/${videoId}`);

@@ -67,22 +67,50 @@
 
         <h2 class="section-title">Komentari</h2>
 
+        <div class="add-comment" *ngIf="showAddComment" id="add-comment">
+            <textarea class="comment-input" [(ngModel)]="commentText" [disabled]="submittingComment" (keydown)="onCommentKeydown($event)"
+                placeholder="Napiši komentar..."></textarea>
+
+            <div class="comment-actions">
+                <button class="btn" (click)="submitComment()" [disabled]="submittingComment">
+                    {{ submittingComment ? 'Slanje...' : 'Pošalji' }}
+                </button>
+
+                <div class="msg error" *ngIf="commentError">{{ commentError }}</div>
+                <div class="msg success" *ngIf="commentSuccess">{{ commentSuccess }}</div>
+            </div>
+        </div>
+
         <div class="info" *ngIf="!loading && !errorComments && comments.length === 0">
             <p class="no-comments">Nema komentara za ovaj video.</p>
         </div>
 
-        <div *ngIf="loading" class="info">Učitavanje...</div>
-        <div *ngIf="errorComments" class="error">{{ errorComments }}</div>
-
-        <div class="comments" *ngIf="!loading && !errorComments">
-            <div class="comment" *ngFor="let c of comments">
+        <div class="comments-list">
+            <div class="comment-card" *ngFor="let c of comments">
                 <div class="comment-head">
-                    <a class="author" [routerLink]="['/users', c.authorUsername]">{{ c.authorUsername }}</a>
-                    <span class="dot">•</span>
-                    <span class="date">{{ c.createdAt }}</span>
+                    <strong>
+                        <a class="comment-user" [routerLink]="['/users', c.authorUsername]">
+                            @{{ c.authorUsername }}
+                        </a>
+                    </strong>
+
+                    <span class="date">{{ c.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
                 </div>
                 <div class="comment-text">{{ c.text }}</div>
             </div>
+
+            <div class="pagination" *ngIf="totalPages > 1">
+                <button class="page-btn" (click)="prevPage()" [disabled]="page === 0 || loading">
+                    ‹ Prethodna
+                </button>
+                <span class="page-info">
+                    Strana {{ page + 1 }} / {{ totalPages }}
+                </span>
+                <button class="page-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages || loading">
+                    Sledeća ›
+                </button>
+            </div>
+
         </div>
 
     </div>
