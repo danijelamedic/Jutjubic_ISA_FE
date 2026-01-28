@@ -15,6 +15,13 @@
 
         <h2 class="section-title">Objave</h2>
 
+        <div class="notice" *ngIf="!loadingVideos && !error && videos.length === 0">
+            <div class="notice-card">
+                Korisnik još uvek nema nijednu objavu.
+            </div>
+        </div>
+
+
         <div *ngIf="loadingVideos" class="info">Učitavanje objava...</div>
 
         <div class="grid" *ngIf="!loadingVideos && !error">
@@ -30,7 +37,7 @@
                     </div>
 
                     <div class="stats">
-                        <span>👍 {{ v.likeCount }}</span>
+                        <span>🔥 {{ v.likeCount }}</span>
                         <span>💬 {{ v.commentCount }}</span>
                     </div>
                 </div>

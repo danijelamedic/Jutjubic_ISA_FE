@@ -39,6 +39,10 @@ export class PublicService {
   getVideoDetails(videoId: number): Observable<PublicVideoDTO> {
     return this.http.get<PublicVideoDTO>(`/api/public/videos/${videoId}`);
   }
+
+  incrementView(videoId: number) {
+    return this.http.post<void>(`/api/public/videos/${videoId}/views`, {});
+  }
   
 }
 
