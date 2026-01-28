@@ -22,9 +22,12 @@
                     <span class="dot">•</span>
                     <span class="date">{{ v.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
                     <span class="dot">•</span>
-                    <span>{{ v.likeCount }} 👍</span>
+                    <span>{{ v.likeCount }} 🔥</span>
                     <span class="dot">•</span>
                     <span>{{ v.commentCount }} 💬</span>
+                    <span class="dot">•</span>
+                    <span>{{ video.viewCount }} 👀</span>
+
                 </div>
 
                 <div class="video-extra">
@@ -45,7 +48,7 @@
             <div *ngIf="errorVideo" class="error">{{ errorVideo }}</div>
 
             <div class="video-actions">
-                <button class="btn-outline" (click)="onLikeClick()">👍 Like</button>
+                <button class="btn-outline" (click)="onLikeClick()">🔥 Like</button>
                 <button class="btn" (click)="onCommentClick()">💬 Komentariši</button>
             </div>
 

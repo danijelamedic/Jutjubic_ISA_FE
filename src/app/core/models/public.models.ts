@@ -7,6 +7,7 @@ export interface PublicVideoDTO {
   commentCount: number;
   location: string | null;
   description: string;
+  viewCount: number;
 }
 
 export interface SpringPage<T> {

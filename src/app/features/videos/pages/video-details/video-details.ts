@@ -40,6 +40,9 @@ export class VideoDetails implements OnInit {
   showAuthNotice = false;
   showAddComment = false;
 
+  private incrementedFor = new Set<number>();
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -49,17 +52,21 @@ export class VideoDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    this.videoId = Number(idParam);
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      const id = Number(idParam);
 
-    if (!this.videoId || Number.isNaN(this.videoId)) {
-      this.errorVideo = 'Neispravan video ID.';
-      return;
-    }
+      if (!id || Number.isNaN(id)) {
+        this.errorVideo = 'Neispravan video ID.';
+        return;
+      }
 
-    this.loadVideoDetails();
-    this.loadComments(0);
+      this.videoId = id;
+
+      this.onEnterVideo(id);
+    });
   }
+
 
   private loadVideoDetails(): void {
     this.videoLoading = true;
@@ -116,7 +123,7 @@ export class VideoDetails implements OnInit {
 
   onLikeClick(): void {
     if (this.authState.isAuthenticated()) {
-      // TODO: kasnije pravi like
+      // to do : implementiraj like
       return;
     }
     this.showAuthNotice = true;
@@ -210,5 +217,26 @@ export class VideoDetails implements OnInit {
       this.submitComment();
     }
   }
+  private onEnterVideo(id: number): void {
+    const shouldIncrement = !this.incrementedFor.has(id);
+
+    if (shouldIncrement) {
+      this.incrementedFor.add(id);
+
+      this.publicService.incrementView(id).subscribe({
+        next: () => {
+          this.loadVideoDetails();
+        },
+        error: () => {
+          this.loadVideoDetails();
+        }
+      });
+    } else {
+      this.loadVideoDetails();
+    }
+
+    this.loadComments(0);
+  }
+
 
 }
