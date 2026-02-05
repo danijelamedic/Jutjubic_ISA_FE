@@ -6,6 +6,7 @@
       <a routerLink="/home" routerLinkActive="active">Home</a>
     
       <a class="nav-link" routerLink="/upload" *ngIf="isLoggedIn()">Postavi video</a>
+      <a class="nav-link" routerLink="/watch-party" *ngIf="isLoggedIn()"> Watch Party</a>
 
       @if (!isLoggedIn()) {
       <a routerLink="/login" routerLinkActive="active">LogIn</a>

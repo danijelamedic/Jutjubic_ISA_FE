@@ -1,0 +1,164 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+import { WatchPartyWsService } from '../../../../core/services/watch-party-ws.service';
+import { WatchPartyApiService } from '../../../../core/services/watch-party-api.service';
+import { WatchPartyEventDTO, WatchPartyRoomDTO } from '../../../../core/models/watch-party.models';
+import { AuthService } from '../../../../core/services/auth.services';
+
+
+@Component({
+  selector: 'app-watch-party-room',
+  templateUrl: './watch-party-room.html',
+  styleUrls: ['./watch-party-room.scss'],
+  standalone: true,
+  imports: [CommonModule],
+})
+export class WatchPartyRoomComponent implements OnInit, OnDestroy {
+  roomId = '';
+
+  room: WatchPartyRoomDTO | null = null;
+  isOwner = false;
+  eventLog: string[] = [];
+
+  status = 'Povezujem se...';
+  error = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private ws: WatchPartyWsService,
+    private api: WatchPartyApiService,
+    private auth: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.roomId = this.route.snapshot.paramMap.get('roomId') || '';
+
+    if (!this.roomId) {
+      this.error = 'Nedostaje roomId u URL-u.';
+      return;
+    }
+
+    this.api.getRoom(this.roomId).subscribe({
+      next: (room) => {
+        this.room = room;
+        const ownerEmail = (room as any).ownerEmail ?? null;
+        const ownerUsername = (room as any).ownerUsername ?? (room as any).owner ?? null;
+
+        const me = this.getJwtIdentity();
+
+        console.log('ROOM ownerEmail:', (room as any).ownerEmail);
+        console.log('JWT identity:', this.getJwtIdentity());
+        console.log('isOwner:', this.isOwner);
+
+        this.isOwner =
+          (!!me && !!ownerEmail && me.toLowerCase() === ownerEmail.toLowerCase()) ||
+          (!!me && !!ownerUsername && me === ownerUsername);
+
+
+        this.status = this.isOwner ? 'Ti si vlasnik sobe.' : 'U sobi si kao gost.';
+
+        this.ws.subscribeRoom(this.roomId, (evt) => this.handleEvent(evt));
+      },
+      error: () => {
+        this.error = 'Soba ne postoji ili ne može da se učita.';
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.roomId) {
+      this.api.leaveRoom(this.roomId).subscribe({ error: () => {} });
+    }
+    this.ws.unsubscribeRoom();
+  }
+
+  startVideo(): void {
+    this.error = '';
+
+    console.log('[WP] startVideo clicked. isOwner=', this.isOwner, 'roomId=', this.roomId, 'videoId=', this.room?.videoId);
+
+    if (!this.isOwner) {
+      this.error = 'Samo vlasnik sobe može da pusti video.';
+      return;
+    }
+
+    if (!this.room?.videoId) {
+      this.error = 'Soba nema videoId.';
+      return;
+    }
+
+    this.ws.startVideo(this.roomId, this.room.videoId);
+    console.log('[WP] startVideo publish sent');
+  }
+
+
+  private handleEvent(evt: WatchPartyEventDTO): void {
+    console.log('WATCH PARTY EVENT:', evt);
+
+    const text = this.formatEvent(evt);
+    if (text) {
+      this.eventLog.unshift(text);
+      if (this.eventLog.length > 8) this.eventLog.pop();
+    }
+
+    switch (evt.type) {
+      case 'ERROR':
+        this.error = evt.message ?? 'Greška u WP sobi.';
+        return;
+
+      case 'START_VIDEO':
+        if (evt.videoId) {
+          this.ws.disconnect();
+          this.router.navigate(['/videos', evt.videoId]);
+        }
+        return;
+
+      case 'ROOM_CLOSED':
+        this.status = 'Watch party završen.';
+        this.error = evt.message ?? 'Soba je zatvorena.';
+        return;
+
+      default:
+        return;
+    }
+  }
+
+  private formatEvent(evt: WatchPartyEventDTO): string {
+    const u = evt.username;
+
+    switch (evt.type) {
+      case 'ROOM_CREATED':
+        return 'Soba je kreirana.';
+      case 'USER_JOINED':
+        return u ? `${u} se pridružio/la.` : (evt.message ?? 'Korisnik se pridružio.');
+      case 'USER_LEFT':
+        return u ? `${u} je napustio/la sobu.` : (evt.message ?? 'Korisnik je napustio sobu.');
+      case 'START_VIDEO':
+        return u ? `${u} je pustio video.` : (evt.message ?? 'Video je pušten.');
+      case 'ROOM_CLOSED':
+        return 'Vlasnik je zatvorio sobu.';
+      case 'ERROR':
+        return evt.message ?? 'Greška.';
+      default:
+        return evt.type;
+    }
+  }
+
+  private getJwtIdentity(): string | null {
+    const token = this.auth.getToken(); 
+    if (!token) return null;
+
+    try {
+      const payloadB64 = token.split('.')[1];
+      const decoded = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
+      return decoded?.email ?? decoded?.username ?? decoded?.sub ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+
+}

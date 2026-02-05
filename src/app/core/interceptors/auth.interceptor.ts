@@ -6,7 +6,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const isPublicEndpoint = req.url.includes('/api/public');
   const isAuthEndpoint = req.url.includes('/api/auth');
 
-  // Ne šalji Authorization header na public/auth rute
   if (!token || isPublicEndpoint || isAuthEndpoint) {
     return next(req);
   }
@@ -16,6 +15,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       Authorization: `Bearer ${token}`
     }
   });
+  
+  console.log('INTERCEPT', req.url);
 
   return next(req);
 };

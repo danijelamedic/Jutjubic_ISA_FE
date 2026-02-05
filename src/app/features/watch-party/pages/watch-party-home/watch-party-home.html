@@ -1,0 +1,60 @@
+<div class="page">
+    <div class="container">
+        <div class="card">
+            <h1>Watch Party</h1>
+            <p class="muted">Kreiraj sobu i gledaj video sa drugima.</p>
+        
+            <button class="primary" (click)="showCreate = !showCreate">
+                {{ showCreate ? 'Zatvori formu' : '+ Kreiraj sobu' }}
+            </button>
+        
+            <div *ngIf="showCreate" class="create-box">
+                <h3>Izaberi video</h3>
+        
+                <div *ngIf="videosLoading" class="muted">Učitavam videe...</div>
+                <div *ngIf="videosError" class="error">{{ videosError }}</div>
+        
+                <div class="video-list" *ngIf="!videosLoading && videos.length > 0">
+                    <label class="video-item" *ngFor="let v of videos; trackBy: trackByVideoId">
+                        <input type="radio" name="video" [value]="v.id" [(ngModel)]="selectedVideoId" />
+                        <span class="title">{{ v.title }}</span>
+                        <span class="id">ID: {{ v.id }}</span>
+                    </label>
+
+                </div>
+        
+                <div *ngIf="!videosLoading && videos.length === 0" class="muted">
+                    Nema videa za prikaz.
+                </div>
+        
+                <button class="primary" (click)="create()" [disabled]="loading">
+                    {{ loading ? 'Kreiram...' : 'Kreiraj sobu' }}
+                </button>
+        
+                <div *ngIf="error" class="error">{{ error }}</div>
+            </div>
+        
+            <hr />
+
+            <h3>Aktivne sobe</h3>
+
+            <div *ngIf="roomsLoading" class="muted">Učitavam sobe...</div>
+            <div *ngIf="roomsError" class="error">{{ roomsError }}</div>
+
+            <div *ngIf="!roomsLoading && rooms.length === 0" class="muted">
+                Trenutno nema aktivnih soba.
+            </div>
+
+            <div class="rooms" *ngIf="rooms.length > 0">
+                <div class="room-card" *ngFor="let r of rooms">
+                    <div><b>ID:</b> {{ r.roomId }}</div>
+                    <div><b>Owner:</b> {{ r.ownerEmail }}</div>
+                    <div><b>Members:</b> {{ r.memberCount }}</div>
+                    <div><b>Status:</b> {{ r.status }}</div>
+
+                    <button type="button" (click)="join(r.roomId)">Pridruži se</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

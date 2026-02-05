@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthStateService } from './core/auth/auth-state.service';
 import { CommonModule } from '@angular/common';
+import { WatchPartyWsService } from './core/services/watch-party-ws.service'
 
 @Component({
   selector: 'app-root',
@@ -13,17 +14,19 @@ import { CommonModule } from '@angular/common';
 export class App {
   constructor(
     public authState: AuthStateService,
-    private router: Router
+    private router: Router,
+    private wpWs: WatchPartyWsService
   ) {}
 
   
   isLoggedIn(): boolean {
-    return this.authState.isAuthenticated(); // computed signal -> poziva se kao funkcija
+    return this.authState.isAuthenticated();
   }
   
   logout(): void {
-  this.authState.clear();
-  this.router.navigate(['/']);
-}
+    this.authState.clear();
+    this.wpWs.disconnect();
+    this.router.navigate(['/']);
+  }
 
 }

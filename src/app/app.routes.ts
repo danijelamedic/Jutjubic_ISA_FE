@@ -8,6 +8,9 @@ import { VideoDetails } from './features/videos/pages/video-details/video-detail
 import { PublicUserProfile } from './features/users/pages/public-user-profile/public-user-profile';
 import { UploadVideo } from './features/videos/pages/upload-video/upload-video';
 import { authGuard } from './core/guards/auth.guard';
+import { WatchPartyHomeComponent } from './features/watch-party/pages/watch-party-home/watch-party-home';
+import { WatchPartyRoomComponent } from './features/watch-party/pages/watch-party-room/watch-party-room';
+
 
 
 
@@ -43,6 +46,17 @@ export const routes: Routes = [
     component: UploadVideo,
     canActivate: [authGuard]
   },
+  {
+    path: 'watch-party',
+    component: WatchPartyHomeComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'watch-party/:roomId',
+    component: WatchPartyRoomComponent,
+    canActivate: [authGuard]
+  },
+
 
   // default
   {

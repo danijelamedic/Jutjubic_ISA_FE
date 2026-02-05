@@ -1,0 +1,182 @@
+.page {
+    padding: 32px 0 64px;
+    background: #f3e5e4;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+    color: #f1e6e5;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 20px 45px rgba(215, 43, 31, 0.18);
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+    color: #d72b1f;
+}
+
+.muted {
+    color: #7b3b36;
+}
+
+.divider {
+    height: 1px;
+    background: #ddaca9;
+    margin: 16px 0;
+}
+
+.start-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f3e5e4;
+    border-radius: 16px;
+    border: 1px solid #ddaca9;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+label {
+    font-weight: 700;
+    color: #d72b1f;
+}
+
+input {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid #ddaca9;
+    font-size: 14px;
+}
+
+.event {
+    margin-top: 16px;
+}
+
+.event-title {
+    font-weight: 700;
+    color: #d72b1f;
+    margin-bottom: 6px;
+}
+
+.event-box {
+    padding: 14px;
+    border-radius: 16px;
+    background: #f3e5e4;
+    border: 1px solid #ddaca9;
+}
+
+.badge {
+    display: inline-block;
+    background: #d72b1f;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.error {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: #f3e5e4;
+    border: 1px solid #d72b1f;
+    color: #d72b1f;
+    font-weight: 700;
+}
+
+.wp-wrap {
+    padding: 24px;
+}
+
+.wp-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #f3e5e4;
+    border: 1px solid #ead0cd;
+    border-radius: 16px;
+    padding: 18px 20px;
+}
+
+.wp-meta {
+    margin: 10px 0 14px;
+}
+
+.muted {
+    color: #7a6b6a;
+}
+
+.btn-start {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    background: #d72b1f;
+    color: #fff;
+}
+
+.btn-start:hover {
+    background: #c5261c;
+}
+
+.btn-start:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.events-title {
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+.event-box {
+    background: #fff;
+    border: 1px solid #ead0cd;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.event-box.empty {
+    color: #7a6b6a;
+}
+
+.event {
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #fafafa;
+    border: 1px solid #f1e6e5;
+    margin-bottom: 8px;
+}
+
+.event:last-child {
+    margin-bottom: 0;
+}
+
+.guest-hint {
+    margin-top: 10px;
+    color: #7a6b6a;
+}

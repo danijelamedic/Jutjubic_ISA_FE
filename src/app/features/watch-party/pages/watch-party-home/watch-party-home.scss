@@ -1,0 +1,145 @@
+:host {
+    display: block;
+}
+
+.page {
+    min-height: calc(100vh - 90px);
+    background: #f3e5e4;
+    padding: 32px 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 950px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px;
+    border: 1px solid #ddaca9;
+}
+
+h1, h2, h3 {
+    margin: 0 0 12px 0;
+    color: #d72b1f;
+}
+
+.muted {
+    color: #d72b1f;
+    opacity: 0.75;
+}
+
+.create-box {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 16px;
+    background: #f3e5e4;
+    border: 1px solid #ddaca9;
+}
+
+.video-list {
+    display: grid;
+    gap: 10px;
+    margin: 12px 0 16px 0;
+}
+
+.video-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid #ddaca9;
+    cursor: pointer;
+
+    &:hover {
+        border-color: #d92d21;
+    }
+
+    input[type="radio"] {
+        accent-color: #d72b1f;
+    }
+
+    .title {
+        flex: 1;
+        font-weight: 600;
+        color: #d72b1f;
+    }
+
+    .id {
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f3e5e4;
+        border: 1px solid #ddaca9;
+        color: #d72b1f;
+    }
+}
+
+button.primary {
+    background: #d72b1f;
+    border: none;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background: #d92d21;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.rooms {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.room-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid #ddaca9;
+
+    b {
+        color: #d72b1f;
+    }
+
+    button {
+        margin-top: 10px;
+        background: #d72b1f;
+        color: #ffffff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+
+        &:hover {
+            background: #d92d21;
+        }
+    }
+}
+
+.error {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f3e5e4;
+    border: 1px solid #d92d21;
+    color: #d72b1f;
+    font-weight: 600;
+}
