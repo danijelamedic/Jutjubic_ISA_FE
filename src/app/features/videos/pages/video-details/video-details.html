@@ -2,6 +2,25 @@
     <div class="container">
         <a class="back" routerLink="/">← Nazad na feed</a>
 
+        <!-- WATCH PARTY BAR -->
+        <div class="wp-bar" *ngIf="wpRoomId">
+            <div class="wp-left">
+                <div class="wp-title">Watch Party</div>
+                <div class="wp-sub">
+                    <span class="wp-pill" [class.closed]="wpRoomStatus === 'CLOSED'">
+                        {{ wpRoomStatus }}
+                    </span>
+                    <span class="wp-muted" *ngIf="wpRoomStatus === 'STARTED'">Video je pokrenut</span>
+                    <span class="wp-muted" *ngIf="wpRoomStatus === 'WAITING'">Čeka se vlasnik</span>
+                    <span class="wp-muted" *ngIf="wpRoomStatus === 'CLOSED'">Soba je zatvorena</span>
+                </div>
+            </div>
+        
+            <button class="wp-btn" (click)="leaveWatchParty()">
+                {{ isWpOwner ? 'Zatvori sobu' : 'Napusti sobu' }}
+            </button>
+        </div>
+
         <div class="video-box">
 
             <div class="video-player">
@@ -40,6 +59,7 @@
                         <span class="label">Opis:</span>
                         <span class="value">{{ v.description }}</span>
                     </div>
+                    
                 </div>
             </div>
 

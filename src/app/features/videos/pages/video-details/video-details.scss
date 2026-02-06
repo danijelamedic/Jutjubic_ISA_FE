@@ -383,3 +383,75 @@
 .msg.error {
     color: #c62828;
 }
+
+.wp-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f3e5e4;
+    border: 1px solid #ddaca9;
+    margin: 10px 0 14px;
+}
+
+.wp-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wp-title {
+    font-weight: 800;
+    color: #d72b1f;
+}
+
+.wp-sub {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wp-muted {
+    color: #7a3a35;
+    opacity: 0.9;
+    font-size: 13px;
+}
+
+.wp-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 12px;
+    border: 1px solid #ddaca9;
+    color: #d72b1f;
+    background: #fff;
+}
+
+.wp-pill.closed {
+    color: #7a3a35;
+    opacity: 0.8;
+}
+
+.wp-btn {
+    background: #d72b1f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.wp-btn:hover:not(:disabled) {
+    background: #d92d21;
+}
+
+.wp-btn:disabled {
+    background: #cfcfcf;
+    color: #7b7b7b;
+    cursor: not-allowed;
+    opacity: 0.75;
+}

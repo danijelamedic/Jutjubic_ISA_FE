@@ -7,12 +7,14 @@ import { SpringPage, PublicVideoDTO, PublicCommentDTO, PublicUserDTO, PagedRespo
 @Injectable({
   providedIn: 'root'
 })
+  
 export class PublicService {
-    private readonly baseUrl = '/api/public';
 
-    constructor(private http: HttpClient) {}
+  private readonly baseUrl = '/api/public';
 
-      getVideos(page = 0, size = 10) {
+  constructor(private http: HttpClient) {}
+
+  getVideos(page = 0, size = 10) {
     const params = new HttpParams().set('page', page).set('size', size);
     return this.http.get<PagedResponse<PublicVideoDTO>>(`${this.baseUrl}/videos`, { params });
   }

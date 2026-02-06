@@ -7,6 +7,8 @@ import { PublicCommentDTO, PublicVideoDTO } from '../../../../core/models/public
 import { AuthStateService } from '../../../../core/auth/auth-state.service';
 import { FormsModule } from '@angular/forms';
 import { CommentService } from '../../../../core/services/comment.service';
+import { WatchPartyApiService } from '../../../../core/services/watch-party-api.service';
+
 
 
 @Component({
@@ -40,6 +42,13 @@ export class VideoDetails implements OnInit {
   showAuthNotice = false;
   showAddComment = false;
 
+  //watch party
+  wpRoomId: string | null = null;
+  wpRoomStatus: 'WAITING' | 'STARTED' | 'CLOSED' | null = null;
+  isWpOwner = false;
+  leavingWp = false;
+
+
   private incrementedFor = new Set<number>();
 
 
@@ -48,7 +57,8 @@ export class VideoDetails implements OnInit {
     private router: Router,
     private publicService: PublicService,
     public authState: AuthStateService,
-    public commentService: CommentService
+    public commentService: CommentService,
+    public watchPartyApi: WatchPartyApiService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +74,19 @@ export class VideoDetails implements OnInit {
       this.videoId = id;
 
       this.onEnterVideo(id);
+
+      this.route.queryParamMap.subscribe(qp => {
+      const rid = qp.get('wpRoomId');
+      this.wpRoomId = rid ? rid : null;
+
+      if (this.wpRoomId) {
+        this.loadWpRoom(this.wpRoomId);
+      } else {
+        this.wpRoomStatus = null;
+        this.isWpOwner = false;
+      }
+    });
+
     });
   }
 
@@ -238,5 +261,51 @@ export class VideoDetails implements OnInit {
     this.loadComments(0);
   }
 
+  private loadWpRoom(roomId: string): void {
+  this.watchPartyApi.getRoom(roomId).subscribe({
+    next: (room: any) => {
+      this.wpRoomStatus = room?.status ?? null;
+
+      const ownerEmail = room?.ownerEmail ?? null;
+      const me = this.getJwtIdentity();
+
+      this.isWpOwner = !!me && !!ownerEmail && me.toLowerCase() === ownerEmail.toLowerCase();
+    },
+    error: () => {
+      this.wpRoomStatus = null;
+      this.isWpOwner = false;
+    }
+  });
+}
+
+leaveWatchParty(): void {
+  if (!this.wpRoomId) return;
+
+  this.leavingWp = true;
+
+  this.watchPartyApi.leaveRoom(this.wpRoomId).subscribe({
+    next: () => {
+      this.leavingWp = false;
+      this.router.navigate(['/watch-party']);
+    },
+    error: (e) => {
+      console.error('Leave WP failed', e);
+      this.leavingWp = false;
+    }
+  });
+}
+
+  private getJwtIdentity(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+
+    try {
+      const payloadB64 = token.split('.')[1];
+      const decoded = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')));
+      return decoded?.email ?? decoded?.username ?? decoded?.sub ?? null;
+    } catch {
+      return null;
+    }
+  }
 
 }

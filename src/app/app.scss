@@ -1,0 +1,15 @@
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-username {
+    font-size: 14px;
+    font-weight: 700;
+    color: #d72b1f;
+    background: #f3e5e4;
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1;
+}

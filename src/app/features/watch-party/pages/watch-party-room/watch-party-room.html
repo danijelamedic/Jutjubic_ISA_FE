@@ -1,0 +1,35 @@
+<div class="wp-wrap">
+    <div class="wp-card" *ngIf="room; else loading">
+        <h2>Watch Party soba</h2>
+
+        <div class="wp-meta">
+            <div class="muted">ID: {{ displayRoomId() }}</div>
+        
+            <ng-container *ngIf="isOwner; else guestLabel">
+                <div class="muted">Vlasnik sobe</div>
+                <button class="wp-btn-primary" (click)="startVideo()" [disabled]="!getRoomVideoId()">
+                    ▶ Pusti video
+                </button>
+            </ng-container>
+        
+            <ng-template #guestLabel>
+                <div class="muted">Gost</div>
+                <div class="muted">Čeka se da vlasnik pusti video…</div>
+            </ng-template>
+        </div>
+
+        <h3 class="events-title">Poslednji događaji</h3>
+
+        <div class="event-box" *ngIf="eventLog.length > 0; else noEvents">
+            <div class="event" *ngFor="let e of eventLog">{{ e }}</div>
+        </div>
+
+        <ng-template #noEvents>
+            <div class="event-box empty">Još nema događaja.</div>
+        </ng-template>
+    </div>
+
+    <ng-template #loading>
+        <div class="wp-card">Učitavam sobu…</div>
+    </ng-template>
+</div>
