@@ -115,6 +115,7 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
 
 // guest
   private handleEvent(evt: WatchPartyEventDTO): void {
+    if (!evt || !evt.type) return;
     console.log('WATCH PARTY EVENT:', evt);
 
     const text = this.formatEvent(evt);
@@ -134,14 +135,16 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
           this.router.navigate(['/videos', evt.videoId], {
             queryParams: { wpRoomId: evt.roomId }
           });
-
+          
         }
+        
         return;
 
 
       case 'ROOM_CLOSED':
-        this.status = 'Watch party završen.';
-        this.error = evt.message ?? 'Soba je zatvorena.';
+        this.status = 'CLOSED';
+        this.error = '';
+        this.navigatingToVideo = false;
         return;
 
       default:

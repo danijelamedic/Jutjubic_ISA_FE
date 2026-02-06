@@ -16,7 +16,7 @@
                 </div>
             </div>
         
-            <button class="wp-btn" [disabled]="leavingWp || wpRoomStatus === 'CLOSED'" (click)="leaveWatchParty()">
+            <button class="wp-btn" (click)="leaveWatchParty()">
                 {{ isWpOwner ? 'Zatvori sobu' : 'Napusti sobu' }}
             </button>
         </div>
@@ -59,6 +59,7 @@
                         <span class="label">Opis:</span>
                         <span class="value">{{ v.description }}</span>
                     </div>
+                    
                 </div>
             </div>
 

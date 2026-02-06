@@ -20,6 +20,9 @@
                         <span class="title">{{ v.title }}</span>
                         <span class="id">ID: {{ v.id }}</span>
                     </label>
+                    <button *ngIf="hasMoreVideos" type="button" class="load-more" (click)="loadMoreVideos()" [disabled]="videosLoading">
+                        {{ videosLoading ? 'Učitavam…' : 'Učitaj još' }}
+                    </button>
 
                 </div>
         

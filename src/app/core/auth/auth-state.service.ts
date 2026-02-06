@@ -19,18 +19,38 @@ export class AuthStateService {
   private _user = signal<AuthUser | null>(null);
   user = computed(() => this._user());
 
+  username = signal<string | null>(null);
+
   setToken(token: string) {
     localStorage.setItem(this.TOKEN_KEY, token);
     this._token.set(token);
+    this.username.set(this.extractUsername(token));
   }
 
   clear() {
     localStorage.removeItem(this.TOKEN_KEY);
     this._token.set(null);
     this._user.set(null);
+    this.username.set(null);
   }
 
+  
   setUser(user: AuthUser | null) {
     this._user.set(user);
+  }
+
+  initFromStorage() {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    this._token.set(token); 
+    this.username.set(token ? this.extractUsername(token) : null);
+  }
+
+  private extractUsername(token: string): string | null {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || payload.username || null;
+    } catch {
+      return null;
+    }
   }
 }

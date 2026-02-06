@@ -1,18 +1,25 @@
 <header class="app-header">
   <div class="container header-inner">
-    <img class="brand-logo" src="images/jutjubic.png" alt="Jutjubić" />
+
+    <div class="brand">
+      <img class="brand-logo" src="images/jutjubic.png" alt="Jutjubić" />
+
+      <span class="brand-username" *ngIf="isLoggedIn()">
+        @{{ authState.username() }}
+      </span>
+    </div>
 
     <nav class="nav">
       <a routerLink="/home" routerLinkActive="active">Home</a>
-    
+
       <a class="nav-link" routerLink="/upload" *ngIf="isLoggedIn()">Postavi video</a>
       <a class="nav-link" routerLink="/watch-party" *ngIf="isLoggedIn()"> Watch Party</a>
 
       @if (!isLoggedIn()) {
-      <a routerLink="/login" routerLinkActive="active">LogIn</a>
-      <a routerLink="/register" routerLinkActive="active">Registracija</a>
+        <a routerLink="/login" routerLinkActive="active">LogIn</a>
+        <a routerLink="/register" routerLinkActive="active">Registracija</a>
       } @else {
-      <button type="button" class="nav-btn" (click)="logout()">LogOut</button>
+        <button type="button" class="nav-btn" (click)="logout()">LogOut</button>
       }
     </nav>
 

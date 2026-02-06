@@ -18,6 +18,10 @@ export class App {
     private wpWs: WatchPartyWsService
   ) {}
 
+  ngOnInit() {
+    this.authState.initFromStorage();
+  }
+
   
   isLoggedIn(): boolean {
     return this.authState.isAuthenticated();
@@ -27,6 +31,10 @@ export class App {
     this.authState.clear();
     this.wpWs.disconnect();
     this.router.navigate(['/']);
+  }
+
+  username() {
+    return this.authState.username();
   }
 
 }

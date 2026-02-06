@@ -25,6 +25,10 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
   rooms: any[] = [];
   roomsLoading = false;
   roomsError = '';
+  videoPage = 0;
+  readonly videoPageSize = 20;
+  hasMoreVideos = true;
+
 
   videos: any[] = [];
   videosLoading = false;
@@ -45,9 +49,8 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadRooms();
-    this.loadVideos();
+    this.loadVideos(true);
 
-    // realtime update soba
     this.roomsSub = this.ws.subscribeRooms((evt) => {
       this.handleRoomsEvent(evt);
     });
@@ -155,48 +158,50 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadVideos(): void {
+  loadVideos(reset = false): void {
+    if (this.videosLoading) return;
+
+    if (reset) {
+      this.videos = [];
+      this.videoTitleById.clear();
+      this.videoPage = 0;
+      this.hasMoreVideos = true;
+      this.selectedVideoId = null; 
+    }
+
+    if (!this.hasMoreVideos) return;
+
     this.videosLoading = true;
     this.videosError = '';
-    this.videos = [];
 
-    const pageSize = 20;
-    let page = 0;
+    this.publicService.getVideos(this.videoPage, this.videoPageSize).subscribe({
+      next: (res: any) => {
+        const chunk = res?.content ?? res ?? [];
+        this.videos.push(...chunk);
 
-    const loadNext = () => {
-      this.publicService.getVideos(page, pageSize).subscribe({
-        next: (res: any) => {
-          const chunk = res?.content ?? res ?? [];
-          this.videos.push(...chunk);
-
-          for (const v of chunk) {
-            if (v?.id != null) {
-              const title = v.title ?? v.name ?? `Video #${v.id}`;
-              this.videoTitleById.set(v.id, title);
-            }
+        for (const v of chunk) {
+          if (v?.id != null) {
+            const title = v.title ?? v.name ?? `Video #${v.id}`;
+            this.videoTitleById.set(v.id, title);
           }
-                    
-          const isLast =
-            (typeof res?.last === 'boolean' && res.last === true) ||
-            chunk.length < pageSize;
+        }
 
-          if (isLast) {
-            this.videosLoading = false;
-            return;
-          }
+        const isLast =
+          (typeof res?.last === 'boolean' && res.last === true) ||
+          chunk.length < this.videoPageSize;
 
-          page++;
-          loadNext();
-        },
-        error: (err: any) => {
-          this.videosLoading = false;
-          this.videosError = err?.error?.message ?? 'Ne mogu da učitam videe.';
-        },
-      });
-    };
+        this.hasMoreVideos = !isLast;
+        this.videoPage++;
 
-    loadNext();
+        this.videosLoading = false;
+      },
+      error: (err: any) => {
+        this.videosLoading = false;
+        this.videosError = err?.error?.message ?? 'Ne mogu da učitam videe.';
+      },
+    });
   }
+
 
   trackByVideoId(_: number, v: any) {
     return v.id;
@@ -206,4 +211,9 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
     if (!videoId) return '—';
     return this.videoTitleById.get(videoId) ?? `Video #${videoId}`;
   }
+
+  loadMoreVideos(): void {
+    this.loadVideos(false);
+  }
+
 }
