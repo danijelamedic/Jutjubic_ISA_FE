@@ -127,6 +127,7 @@ button.primary {
         padding: 8px 14px;
         border-radius: 999px;
         cursor: pointer;
+        margin-left: 85%;
 
         &:hover {
             background: #d92d21;
@@ -142,4 +143,50 @@ button.primary {
     border: 1px solid #d92d21;
     color: #d72b1f;
     font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: 1px solid #ddaca9;
+    background: #f3e5e4;
+    color: #d72b1f;
+    margin-top: 2%;
+}
+
+.status-badge.started {
+    border-color: #d92d21;
+    background: #f3e5e4;
+    color: #d92d21;
+}
+
+.status-badge.closed {
+    opacity: 0.7;
+    border-color: #ddaca9;
+    color: #7a3a35;
+}
+
+.join-btn {
+    background-color: #d72b1f;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background-color: #b82117;
+    }
+
+    &:disabled {
+        background-color: #e0e0e0;
+        color: #888;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
 }

@@ -22,7 +22,7 @@ export interface WatchPartyRoomDTO {
   id: string;
   ownerEmail: string;    
   members: number;
-  status: 'WAITING' | 'PLAYING' | 'CLOSED';
+  status: 'WAITING' | 'STARTED' | 'CLOSED';
   videoId: number;
 }
 

@@ -6,6 +6,7 @@ import { PublicService } from '../../../../core/services/public.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { WatchPartyEventDTO } from '../../../../core/models/watch-party.models';
 
 @Component({
   selector: 'app-watch-party-home',
@@ -24,14 +25,14 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
   rooms: any[] = [];
   roomsLoading = false;
   roomsError = '';
-  
-  // room info
+
   videos: any[] = [];
   videosLoading = false;
   videosError = '';
   selectedVideoId: number | null = null;
   showCreate = false;
 
+  videoTitleById = new Map<number, string>();
 
   private roomsSub?: Subscription;
 
@@ -45,8 +46,10 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadRooms();
     this.loadVideos();
-    this.roomsSub = this.ws.subscribeRooms((_evt) => {
-      this.loadRooms();
+
+    // realtime update soba
+    this.roomsSub = this.ws.subscribeRooms((evt) => {
+      this.handleRoomsEvent(evt);
     });
   }
 
@@ -68,6 +71,55 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
         this.roomsError = err?.error?.message ?? 'Ne mogu da učitam liste soba.';
       },
     });
+  }
+
+  private handleRoomsEvent(evt: WatchPartyEventDTO): void {
+    if (!evt || !evt.type) return;
+
+    const roomId = evt.roomId ?? null;
+
+    if (!roomId) {
+      return;
+    }
+
+    switch (evt.type) {
+      case 'START_VIDEO':
+        this.patchRoom(roomId, {
+          status: 'STARTED',
+          currentVideoId: evt.videoId ?? undefined,
+        });
+        return;
+
+      case 'ROOM_CLOSED':
+        this.patchRoom(roomId, { status: 'CLOSED' });
+        return;
+
+      case 'ROOM_CREATED':
+      case 'USER_JOINED':
+      case 'USER_LEFT':
+        this.loadRooms();
+        return;
+
+      default:
+        return;
+    }
+  }
+
+  private patchRoom(roomId: string, patch: any): void {
+    const idx = this.rooms.findIndex((r) => r.roomId === roomId || r.id === roomId);
+    if (idx === -1) {
+      this.loadRooms();
+      return;
+    }
+
+    const current = this.rooms[idx];
+
+    this.rooms[idx] = {
+      ...current,
+      ...patch,
+      currentVideoId:
+        patch.currentVideoId ?? current.currentVideoId ?? current.videoId ?? null,
+    };
   }
 
   join(roomId: string): void {
@@ -103,13 +155,12 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-
   loadVideos(): void {
     this.videosLoading = true;
     this.videosError = '';
     this.videos = [];
 
-    const pageSize = 20; 
+    const pageSize = 20;
     let page = 0;
 
     const loadNext = () => {
@@ -118,6 +169,13 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
           const chunk = res?.content ?? res ?? [];
           this.videos.push(...chunk);
 
+          for (const v of chunk) {
+            if (v?.id != null) {
+              const title = v.title ?? v.name ?? `Video #${v.id}`;
+              this.videoTitleById.set(v.id, title);
+            }
+          }
+                    
           const isLast =
             (typeof res?.last === 'boolean' && res.last === true) ||
             chunk.length < pageSize;
@@ -133,7 +191,7 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
         error: (err: any) => {
           this.videosLoading = false;
           this.videosError = err?.error?.message ?? 'Ne mogu da učitam videe.';
-        }
+        },
       });
     };
 
@@ -144,4 +202,8 @@ export class WatchPartyHomeComponent implements OnInit, OnDestroy {
     return v.id;
   }
 
+  getVideoTitle(videoId: number | null | undefined): string {
+    if (!videoId) return '—';
+    return this.videoTitleById.get(videoId) ?? `Video #${videoId}`;
+  }
 }

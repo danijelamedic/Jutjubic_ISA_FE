@@ -47,13 +47,39 @@
 
             <div class="rooms" *ngIf="rooms.length > 0">
                 <div class="room-card" *ngFor="let r of rooms">
-                    <div><b>ID:</b> {{ r.roomId }}</div>
-                    <div><b>Owner:</b> {{ r.ownerEmail }}</div>
-                    <div><b>Members:</b> {{ r.memberCount }}</div>
-                    <div><b>Status:</b> {{ r.status }}</div>
+                    <div class="room-row">
+                        <div><b>ID:</b> {{ r.roomId }}</div>
+                        <div><b>Video:</b> {{ getVideoTitle(r.currentVideoId ?? r.id) }}</div>
+                        <div><b>Owner:</b> {{ r.ownerEmail }}</div>
+                        <div><b>Members:</b> {{ r.memberCount }}</div>
+                        <div [class.waiting]="r.status === 'WAITING'" [class.started]="r.status === 'STARTED'"
+                            [class.closed]="r.status === 'CLOSED'"><b>Status:</b> {{ r.status }}</div>
+                
+                        <!-- <div class="status-badge" [class.waiting]="r.status === 'WAITING'" [class.started]="r.status === 'STARTED'"
+                            [class.closed]="r.status === 'CLOSED'">
+                            Status: {{ r.status }}
+                        </div>
+                    </div> -->
+                
+                    <button *ngIf="r.status !== 'CLOSED'" class="join-btn" (click)="join(r.roomId)">
+                        Pridruži se
+                    </button>
+                    
+                    <div class="muted" *ngIf="r.status === 'CLOSED'">
+                        Soba je zatvorena
+                    </div>
 
-                    <button type="button" (click)="join(r.roomId)">Pridruži se</button>
+
+                
+                    <!-- <div class="muted" *ngIf="r.status === 'STARTED'">
+                        Video je pokrenut.
+                    </div>
+                
+                    <div class="muted" *ngIf="r.status === 'CLOSED'">
+                        Soba je zatvorena.
+                    </div> -->
                 </div>
+
             </div>
         </div>
     </div>

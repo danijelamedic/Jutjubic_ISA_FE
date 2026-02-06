@@ -107,10 +107,13 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
 
     this.ws.startVideo(this.roomId, vid);
     this.navigatingToVideo = true;
-    this.router.navigate(['/videos', vid]);
+    this.router.navigate(['/videos', vid], {
+        queryParams: { wpRoomId: this.roomId }
+      });
+
   }
 
-
+// guest
   private handleEvent(evt: WatchPartyEventDTO): void {
     console.log('WATCH PARTY EVENT:', evt);
 
@@ -128,7 +131,10 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
       case 'START_VIDEO':
         if (evt.videoId) {
           this.navigatingToVideo = true;
-          this.router.navigate(['/videos', evt.videoId]);
+          this.router.navigate(['/videos', evt.videoId], {
+            queryParams: { wpRoomId: evt.roomId }
+          });
+
         }
         return;
 
