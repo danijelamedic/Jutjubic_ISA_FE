@@ -12,10 +12,10 @@ export type WatchPartyEventType =
 
 export interface WatchPartyEventDTO {
   type: WatchPartyEventType;
-  message?: string;
-  videoId?: number;
-  roomId?: string;
-  username?: string;
+  message?: string | null;
+  videoId?: number | null;
+  roomId?: string | null;
+  username?: string | null;
 }
 
 export interface WatchPartyRoomDTO {

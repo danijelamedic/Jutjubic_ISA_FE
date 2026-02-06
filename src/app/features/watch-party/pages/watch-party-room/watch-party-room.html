@@ -3,15 +3,20 @@
         <h2>Watch Party soba</h2>
 
         <div class="wp-meta">
-            <div class="muted">ID: {{ room.id }}</div>
+            <div class="muted">ID: {{ displayRoomId() }}</div>
         
-            <div class="muted" *ngIf="isOwner; else guestLabel">Vlasnik sobe</div>
+            <ng-container *ngIf="isOwner; else guestLabel">
+                <div class="muted">Vlasnik sobe</div>
+                <button class="wp-btn-primary" (click)="startVideo()" [disabled]="!getRoomVideoId()">
+                    ▶ Pusti video
+                </button>
+            </ng-container>
+        
             <ng-template #guestLabel>
                 <div class="muted">Gost</div>
                 <div class="muted">Čeka se da vlasnik pusti video…</div>
             </ng-template>
         </div>
-
 
         <h3 class="events-title">Poslednji događaji</h3>
 

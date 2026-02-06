@@ -25,6 +25,8 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
   status = 'Povezujem se...';
   error = '';
 
+  private navigatingToVideo = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -44,24 +46,32 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
     this.api.getRoom(this.roomId).subscribe({
       next: (room) => {
         this.room = room;
+
         const ownerEmail = (room as any).ownerEmail ?? null;
         const ownerUsername = (room as any).ownerUsername ?? (room as any).owner ?? null;
 
         const me = this.getJwtIdentity();
 
-        console.log('ROOM ownerEmail:', (room as any).ownerEmail);
-        console.log('JWT identity:', this.getJwtIdentity());
-        console.log('isOwner:', this.isOwner);
-
         this.isOwner =
           (!!me && !!ownerEmail && me.toLowerCase() === ownerEmail.toLowerCase()) ||
           (!!me && !!ownerUsername && me === ownerUsername);
 
+        console.log('ROOM ownerEmail:', ownerEmail);
+        console.log('JWT identity:', me);
+        console.log('isOwner:', this.isOwner);
+
 
         this.status = this.isOwner ? 'Ti si vlasnik sobe.' : 'U sobi si kao gost.';
 
+        console.log('ROOM object:', room);
+        console.log('ROOM ownerEmail:', ownerEmail);
+        console.log('ROOM ownerUsername:', ownerUsername);
+        console.log('JWT identity:', me);
+        console.log('isOwner:', this.isOwner);
+
         this.ws.subscribeRoom(this.roomId, (evt) => this.handleEvent(evt));
       },
+
       error: () => {
         this.error = 'Soba ne postoji ili ne može da se učita.';
       },
@@ -69,29 +79,35 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.roomId) {
-      this.api.leaveRoom(this.roomId).subscribe({ error: () => {} });
-    }
+      if (!this.navigatingToVideo && this.roomId) {
+        this.api.leaveRoom(this.roomId).subscribe({ error: () => {} });
+      }
+
     this.ws.unsubscribeRoom();
   }
 
+
   startVideo(): void {
     this.error = '';
-
-    console.log('[WP] startVideo clicked. isOwner=', this.isOwner, 'roomId=', this.roomId, 'videoId=', this.room?.videoId);
 
     if (!this.isOwner) {
       this.error = 'Samo vlasnik sobe može da pusti video.';
       return;
     }
 
-    if (!this.room?.videoId) {
-      this.error = 'Soba nema videoId.';
+    const vid = this.getRoomVideoId();
+
+    console.log('[WP] startVideo clicked. isOwner=', this.isOwner, 'roomId=', this.roomId, 'videoId=', vid);
+
+    if (!vid) {
+      this.error = 'Soba nema videoId (backend getRoom ne vraća video).';
+      console.log('[WP] room object:', this.room);
       return;
     }
 
-    this.ws.startVideo(this.roomId, this.room.videoId);
-    console.log('[WP] startVideo publish sent');
+    this.ws.startVideo(this.roomId, vid);
+    this.navigatingToVideo = true;
+    this.router.navigate(['/videos', vid]);
   }
 
 
@@ -111,10 +127,11 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
 
       case 'START_VIDEO':
         if (evt.videoId) {
-          this.ws.disconnect();
+          this.navigatingToVideo = true;
           this.router.navigate(['/videos', evt.videoId]);
         }
         return;
+
 
       case 'ROOM_CLOSED':
         this.status = 'Watch party završen.';
@@ -160,5 +177,13 @@ export class WatchPartyRoomComponent implements OnInit, OnDestroy {
     }
   }
 
+  getRoomVideoId(): number | null {
+    const r: any = this.room;
+    return (r?.videoId ?? r?.currentVideoId ?? null);
+  }
 
+  displayRoomId(): string {
+    const r: any = this.room;
+    return (r?.roomId ?? r?.id ?? '');
+  }
 }
